@@ -529,6 +529,28 @@ impl WebViewHandle {
   }
 }
 
+#[cfg(windows)]
+impl WebViewHandle {
+  /// Wraps an existing `ICoreWebView2` in an opaque handle.
+  ///
+  /// Useful when answering [`WebViewBuilder::with_new_window_req_handler`]
+  /// with a webview the embedder created itself, e.g. for [`NewWindowResponse::Create`].
+  pub fn from_core_webview2(webview: ICoreWebView2) -> Self {
+    Self(webview)
+  }
+}
+
+#[cfg(target_os = "macos")]
+impl WebViewHandle {
+  /// Wraps an existing `WKWebView` in an opaque handle.
+  ///
+  /// Useful when answering [`WebViewBuilder::with_new_window_req_handler`]
+  /// with a webview the embedder created itself, e.g. for [`NewWindowResponse::Create`].
+  pub fn from_wk_webview(webview: Retained<objc2_web_kit::WKWebView>) -> Self {
+    Self(webview)
+  }
+}
+
 /// Additional methods on [`WebViewHandle`] specific to Windows.
 #[cfg(windows)]
 pub trait WebViewHandleExtWindows {
